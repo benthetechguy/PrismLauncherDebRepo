@@ -2,20 +2,16 @@ name: "Build and upload Prism Launcher Release"
 on: workflow_dispatch
 
 jobs:
-  build-arm:
-    name: Build and upload Prism Launcher for bookworm on amd64
+  build-debian-x86:
+    name: Build and upload Prism Launcher for ${{ matrix.suite }} on amd64
     runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
+    strategy:
+      matrix:
 #        suite:
-#          - debian:bookworm-slim
-#          - debian:trixie-slim
-#          - debian:forky-slim
-#          - ubuntu:jammy
-#          - ubuntu:noble
-#          - ubuntu:plucky
-#          - ubuntu:questing
-#        suite: [debian:trixie-slim]
+#          - bookworm
+#          - trixie
+#          - forky
+        suite: [forky]
     steps:
       - name: Checkout prismlauncher packaging
         run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
@@ -26,9 +22,9 @@ jobs:
       - name: Build Debian package
         uses: jtdor/build-deb-action@v1
         with:
-          docker-image: debian:bookworm-slim
+          docker-image: debian:${{ matrix.suite }}-slim
           extra-build-deps: temurin-17-jdk
-          extra-repos: deb https://packages.adoptium.net/artifactory/deb bookworm main
+          extra-repos: deb https://packages.adoptium.net/artifactory/deb ${{ matrix.suite }} main
           extra-repo-keys: |
             -----BEGIN PGP PUBLIC KEY BLOCK-----
 
