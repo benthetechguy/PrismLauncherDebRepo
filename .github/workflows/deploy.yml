@@ -2,9 +2,9 @@ name: "Build and upload Prism Launcher Release"
 on: workflow_dispatch
 
 jobs:
-  build-x86:
-    name: Build and upload Prism Launcher for ${{ matrix.suite }} on ${{ matrix.arch }}
-    runs-on: ubuntu-latest
+  build-arm:
+    name: Build and upload Prism Launcher for ${{ matrix.suite }} on arm64
+    runs-on: ubuntu-24.04-arm
     strategy:
       matrix:
 #        suite:
@@ -15,9 +15,7 @@ jobs:
 #          - ubuntu:noble
 #          - ubuntu:plucky
 #          - ubuntu:questing
-#        arch: [i386, amd64, armhf, arm64]
         suite: [debian:bookworm-slim]
-        arch: [arm64]
     steps:
       - name: Checkout prismlauncher packaging
         run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
@@ -29,5 +27,5 @@ jobs:
         uses: jtdor/build-deb-action@v1
         with:
           docker-image: ${{ matrix.suite }}
-          host-arch: ${{ matrix.arch }}
+          host-arch: arm64
           source-dir: prismlauncher
