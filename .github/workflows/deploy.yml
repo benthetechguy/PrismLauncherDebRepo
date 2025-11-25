@@ -30,8 +30,8 @@ jobs:
     steps:
       - name: Checkout prismlauncher packaging
         run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
-      - name: Install devscripts and git-buildpackage
-        run: sudo apt-get install -y devscripts git-buildpackage
+      - name: Install Debian tools
+        run: sudo apt-get install -y devscripts git-buildpackage reprepro
       - name: Extract original tarball from git
         run: cd prismlauncher && gbp export-orig
       - name: Build Debian package
@@ -82,4 +82,4 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
       - name: Sign package
-        run: debsign -k${{ steps.importkey.outputs.fingerprint }} ./debian/artifacts/*.changes
+        run: sudo chmod -Rv 777 ./debian && debsign -k${{ steps.importkey.outputs.fingerprint }} ./debian/artifacts/*.changes
