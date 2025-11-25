@@ -82,4 +82,4 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
       - name: Sign package
-        run: debsign -k${{ steps.importkey.outputs.fingerprint }} *.changes
+        run: debsign -k${{ steps.importkey.outputs.fingerprint }} ./debian/artifacts/*.changes
