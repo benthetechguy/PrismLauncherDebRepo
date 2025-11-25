@@ -90,4 +90,19 @@ jobs:
           key: cache-${{ github.run_id }}-${{ github.run_attempt }}
           enableCrossOsArchive: true
       - name: Include package in repo
-        run: reprepro -Vb ./repo include ./debian/artifacts/*.changes
+        run: reprepro -Vb ./repo include ${{ matrix.suite }} ./debian/artifacts/*.changes
+  commit:
+    name: Upload built packages to repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get updated repo from cache
+        uses: actions/cache@v4
+        with:
+          path: ./repo
+          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
+          enableCrossOsArchive: true
+      - name: Commit changes to repo
+        uses: EndBug/add-and-commit@v9
+        with:
+          cwd: ./repo
+          message: Upload new packages
