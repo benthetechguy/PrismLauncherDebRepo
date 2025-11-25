@@ -63,5 +63,5 @@ jobs:
             -----END PGP PUBLIC KEY BLOCK-----
 #          host-arch: arm64
           setup-hook:
-            apt-get install -y ca-certificates
+            apt-get update && apt-get install -y ca-certificates
           source-dir: prismlauncher
