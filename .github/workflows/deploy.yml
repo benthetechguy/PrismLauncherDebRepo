@@ -75,7 +75,7 @@ jobs:
             -----END PGP PUBLIC KEY BLOCK-----
 #          host-arch: arm64
           setup-hook:
-            apt-get update && apt-get install -y ca-certificates && sed -i s/openjdk-17-jdk/temurin-17-jdk/g prismlauncher/debian/control
+            apt-get update && apt-get install -y ca-certificates devscripts && sed -i s/openjdk-17-jdk/temurin-17-jdk/g prismlauncher/debian/control
           source-dir: prismlauncher
       - name: Import GPG key
         id: importkey
