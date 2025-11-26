@@ -37,6 +37,7 @@ jobs:
       - name: Build Debian package
         uses: jtdor/build-deb-action@v1
         with:
+          before-build-hook: dch -D ${{ matrix.suite }} --bpo ""
           docker-image: debian:${{ matrix.suite }}-slim
           extra-build-deps: temurin-17-jdk
           extra-repos: deb https://packages.adoptium.net/artifactory/deb ${{ matrix.suite }} main
