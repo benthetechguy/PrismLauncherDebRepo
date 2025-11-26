@@ -1,0 +1,6 @@
+Archive: stable
+Component: contrib
+Origin: PrismLauncher
+Label: PrismLauncher
+Architecture: arm64
+Description: Prism Launcher repository for Debian and Ubuntu

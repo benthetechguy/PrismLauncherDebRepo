@@ -1,0 +1,26 @@
+Codename: forky
+Suite: testing
+Architectures: amd64 arm64
+Components: contrib
+SignWith: AE237E5508F8CBD562E49CA6D6857C60C62A5951
+Origin: PrismLauncher
+Label: PrismLauncher
+Description: Prism Launcher repository for Debian and Ubuntu
+
+Codename: trixie
+Suite: stable
+Architectures: amd64 arm64
+Components: contrib
+SignWith: AE237E5508F8CBD562E49CA6D6857C60C62A5951
+Origin: PrismLauncher
+Label: PrismLauncher
+Description: Prism Launcher repository for Debian and Ubuntu
+
+Codename: bookworm
+Suite: oldstable
+Architectures: amd64 arm64
+Components: contrib
+SignWith: AE237E5508F8CBD562E49CA6D6857C60C62A5951
+Origin: PrismLauncher
+Label: PrismLauncher
+Description: Prism Launcher repository for Debian and Ubuntu

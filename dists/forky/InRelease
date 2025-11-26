@@ -1,0 +1,48 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: PrismLauncher
+Label: PrismLauncher
+Suite: testing
+Codename: forky
+Date: Wed, 26 Nov 2025 22:59:53 UTC
+Architectures: amd64 arm64
+Components: contrib
+Description: Prism Launcher repository for Debian and Ubuntu
+MD5Sum:
+ d41d8cd98f00b204e9800998ecf8427e 0 contrib/binary-amd64/Packages
+ 7029066c27ac6f5ef18d660d5741979a 20 contrib/binary-amd64/Packages.gz
+ cf81ecb9f846ecb78fed58990512c685 160 contrib/binary-amd64/Release
+ d41d8cd98f00b204e9800998ecf8427e 0 contrib/binary-arm64/Packages
+ 7029066c27ac6f5ef18d660d5741979a 20 contrib/binary-arm64/Packages.gz
+ a9dc8afeb51fe24ed0b59f575b745a84 160 contrib/binary-arm64/Release
+SHA1:
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 contrib/binary-amd64/Packages
+ 46c6643f07aa7f6bfe7118de926b86defc5087c4 20 contrib/binary-amd64/Packages.gz
+ 7205abb95079999723e63bc5dc87e5656c2576dd 160 contrib/binary-amd64/Release
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 contrib/binary-arm64/Packages
+ 46c6643f07aa7f6bfe7118de926b86defc5087c4 20 contrib/binary-arm64/Packages.gz
+ 324d590ec703daa57f1dd9a649f0e169ab74b260 160 contrib/binary-arm64/Release
+SHA256:
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 contrib/binary-amd64/Packages
+ 59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 contrib/binary-amd64/Packages.gz
+ 9db3994f29fc09ca71cfdc75d9a395808f7ee5ab8987643518eb651530df77ee 160 contrib/binary-amd64/Release
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 contrib/binary-arm64/Packages
+ 59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 contrib/binary-arm64/Packages.gz
+ 9e9c896378d9972c45d864b61412c34215c7f71a53a8666bb2221e9d83b10906 160 contrib/binary-arm64/Release
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEriN+VQj4y9Vi5Jym1oV8YMYqWVEFAmknhmoACgkQ1oV8YMYq
+WVEN1RAAl8i0JQkBVwpp0Xf/YdkTj3ADlKegU2D+I3WGNbHjeHWm1MGxX95NdlEf
+SJ2k74eSiipsCLRY9Zga6DMLCU/fHvLIRDlj/8cTGmXr7+TIBqDZtt0UxE4bGPkA
+HwWk8DkiEmSgWj41jl2cJL/8oIL5MFLIOXD5Xj4LCNMb7Gfu24K48fl60COZ42In
+SsAZuvCZMYAGQD+c7bB+tC7QJLXcY3wkOgEP1Dq32/m8XZsUxk/QOMCbvkccKEj1
+/AyecDy+L2MuryuUY8cAJLnL7W4BxfoehZw9WnNWXHGOu5gkBy4wDOgEJsiVRcFL
+/84JuG08TOoI3kIfDp5V6tLtencVnZJUQigG+Lnt4r/JLIUT6SJfmczCVgg2uHLq
+EJqLKv+FhV6w4g4P8gtVlSzgSMAgv++5jIrsymiAbub1hgchS6Kt/GkKBmcTNaty
+wdpCSLfjDUw8WGb3D+8OIT60Lusu3G9PTG+2d50rSYAQEOPAqNCDeMsadjvQ6Keo
+mqwKIKSEjVX7SM7Bom41x6H7qGnopicQhnDd2M45Hh+OxYjh7vC7dAlgbtf2fdS9
+rHNUnuhj/dARpC960P1P5eos723/u6Lmpfc5ibQqVecmdYXF3WlTidRBEWAEp2i5
+IYU00Txyon8lWZB1jKGNeGt2nQ3D6xBMOOKmckzYCcoC56Syz18=
+=qpmG
+-----END PGP SIGNATURE-----

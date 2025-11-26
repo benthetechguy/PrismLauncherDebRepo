@@ -1,0 +1,29 @@
+Origin: PrismLauncher
+Label: PrismLauncher
+Suite: oldstable
+Codename: bookworm
+Date: Wed, 26 Nov 2025 22:59:54 UTC
+Architectures: amd64 arm64
+Components: contrib
+Description: Prism Launcher repository for Debian and Ubuntu
+MD5Sum:
+ d41d8cd98f00b204e9800998ecf8427e 0 contrib/binary-amd64/Packages
+ 7029066c27ac6f5ef18d660d5741979a 20 contrib/binary-amd64/Packages.gz
+ bece38f370265173ab017a4cc1cb65a2 162 contrib/binary-amd64/Release
+ d41d8cd98f00b204e9800998ecf8427e 0 contrib/binary-arm64/Packages
+ 7029066c27ac6f5ef18d660d5741979a 20 contrib/binary-arm64/Packages.gz
+ 1fd599ead6b2b3d156aaa72c5906ca88 162 contrib/binary-arm64/Release
+SHA1:
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 contrib/binary-amd64/Packages
+ 46c6643f07aa7f6bfe7118de926b86defc5087c4 20 contrib/binary-amd64/Packages.gz
+ bb7ecc464d8bdc93a7a1a3c40b0cfbb0a7d53b1a 162 contrib/binary-amd64/Release
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 contrib/binary-arm64/Packages
+ 46c6643f07aa7f6bfe7118de926b86defc5087c4 20 contrib/binary-arm64/Packages.gz
+ e141c0c9f57a9113d6f166dff6d2b90d34fba0e8 162 contrib/binary-arm64/Release
+SHA256:
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 contrib/binary-amd64/Packages
+ 59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 contrib/binary-amd64/Packages.gz
+ 951ef5d1839a71bc3682189ace7b5c70770cedebb5ab4c373dd4f2b8a38527cb 162 contrib/binary-amd64/Release
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 contrib/binary-arm64/Packages
+ 59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 contrib/binary-arm64/Packages.gz
+ b0fca6f5f470bd3672175a0a1aac4dee165ea2fc3dec13f4ea5c5112cb078196 162 contrib/binary-arm64/Release

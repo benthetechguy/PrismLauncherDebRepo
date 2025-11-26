@@ -1,0 +1,6 @@
+Archive: testing
+Component: contrib
+Origin: PrismLauncher
+Label: PrismLauncher
+Architecture: amd64
+Description: Prism Launcher repository for Debian and Ubuntu
