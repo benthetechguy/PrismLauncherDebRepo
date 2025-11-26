@@ -22,11 +22,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-#        suite:
-#          - bookworm
-#          - trixie
-#          - forky
-        suite: [trixie]
+        suite:
+          - bookworm
+          - trixie
+          - forky
     steps:
       - name: Checkout prismlauncher packaging
         run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
@@ -73,7 +72,6 @@ jobs:
             wI4qF/KKq9BfyfucAs0ykA==
             =szki
             -----END PGP PUBLIC KEY BLOCK-----
-#          host-arch: arm64
           setup-hook:
             apt-get update && apt-get install -y ca-certificates devscripts && sed -i s/openjdk-17-jdk/temurin-17-jdk/g prismlauncher/debian/control
           source-dir: prismlauncher
@@ -91,11 +89,234 @@ jobs:
           key: cache-${{ github.run_id }}-${{ github.run_attempt }}
           enableCrossOsArchive: true
       - name: Include package in repo
-        run: for file in ./debian/artifacts/*.changes; do reprepro -Vb ./repo include ${{ matrix.suite }} "$file"; done
+        run: for file in ./debian/artifacts/*amd64.changes; do reprepro -Vb ./repo include ${{ matrix.suite }} "$file"; done
+  build-debian-arm:
+    name: Build for ${{ matrix.suite }} on arm64
+    runs-on: ubuntu-24.04-arm
+    strategy:
+      matrix:
+        suite:
+          - bookworm
+          - trixie
+          - forky
+    steps:
+      - name: Checkout prismlauncher packaging
+        run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
+      - name: Install Debian tools
+        run: sudo apt-get install -y devscripts git-buildpackage reprepro
+      - name: Extract original tarball from git
+        run: cd ./prismlauncher && gbp export-orig
+      - name: Build Debian package
+        uses: jtdor/build-deb-action@v1
+        with:
+          before-build-hook: cd ./prismlauncher && dch -D ${{ matrix.suite }} --bpo ""
+          docker-image: debian:${{ matrix.suite }}-slim
+          extra-build-deps: temurin-17-jdk
+          extra-repos: deb https://packages.adoptium.net/artifactory/deb ${{ matrix.suite }} main
+          extra-repo-keys: |
+            -----BEGIN PGP PUBLIC KEY BLOCK-----
+            
+            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
+            wI4qF/KKq9BfyfucAs0ykA==
+            =szki
+            -----END PGP PUBLIC KEY BLOCK-----
+          host-arch: arm64
+          setup-hook:
+            apt-get update && apt-get install -y ca-certificates devscripts && sed -i s/openjdk-17-jdk/temurin-17-jdk/g prismlauncher/debian/control
+          source-dir: prismlauncher
+      - name: Import GPG key
+        id: importkey
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+      - name: Sign package
+        run: sudo chmod -Rv 777 ./debian && debsign -k${{ steps.importkey.outputs.fingerprint }} ./debian/artifacts/*.changes
+      - name: Get repo from cache
+        uses: actions/cache@v4
+        with:
+          path: ./repo
+          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
+          enableCrossOsArchive: true
+      - name: Include package in repo
+        run: for file in ./debian/artifacts/*arm64.changes; do reprepro -Vb ./repo include ${{ matrix.suite }} "$file"; done
+  build-ubuntu-x86:
+    name: Build for ${{ matrix.suite }} on amd64
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        suite:
+          - jammy
+          - noble
+          - plucky
+          - questing
+    steps:
+      - name: Checkout prismlauncher packaging
+        run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
+      - name: Install Debian tools
+        run: sudo apt-get install -y devscripts git-buildpackage reprepro
+      - name: Extract original tarball from git
+        run: cd ./prismlauncher && gbp export-orig
+      - name: Build Ubuntu package
+        uses: jtdor/build-deb-action@v1
+        with:
+          before-build-hook: cd ./prismlauncher && dch -D ${{ matrix.suite }} --bpo ""
+          docker-image: ubuntu:${{ matrix.suite }}
+          extra-build-deps: temurin-17-jdk
+          extra-repos: deb https://packages.adoptium.net/artifactory/deb ${{ matrix.suite }} main
+          extra-repo-keys: |
+            -----BEGIN PGP PUBLIC KEY BLOCK-----
+            
+            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
+            wI4qF/KKq9BfyfucAs0ykA==
+            =szki
+            -----END PGP PUBLIC KEY BLOCK-----
+          setup-hook:
+            apt-get update && apt-get install -y ca-certificates devscripts && sed -i s/openjdk-17-jdk/temurin-17-jdk/g prismlauncher/debian/control
+          source-dir: prismlauncher
+      - name: Import GPG key
+        id: importkey
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+      - name: Sign package
+        run: sudo chmod -Rv 777 ./debian && debsign -k${{ steps.importkey.outputs.fingerprint }} ./debian/artifacts/*.changes
+      - name: Get repo from cache
+        uses: actions/cache@v4
+        with:
+          path: ./repo
+          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
+          enableCrossOsArchive: true
+      - name: Include package in repo
+        run: for file in ./debian/artifacts/*amd64.changes; do reprepro -Vb ./repo include ${{ matrix.suite }} "$file"; done
+  build-ubuntu-arm:
+    name: Build for ${{ matrix.suite }} on arm64
+    runs-on: ubuntu-24.04-arm
+    strategy:
+      matrix:
+        suite:
+          - jammy
+          - noble
+          - plucky
+          - questing
+    steps:
+      - name: Checkout prismlauncher packaging
+        run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
+      - name: Install Debian tools
+        run: sudo apt-get install -y devscripts git-buildpackage reprepro
+      - name: Extract original tarball from git
+        run: cd ./prismlauncher && gbp export-orig
+      - name: Build Ubuntu package
+        uses: jtdor/build-deb-action@v1
+        with:
+          before-build-hook: cd ./prismlauncher && dch -D ${{ matrix.suite }} --bpo ""
+          docker-image: ubuntu:${{ matrix.suite }}
+          extra-build-deps: temurin-17-jdk
+          extra-repos: deb https://packages.adoptium.net/artifactory/deb ${{ matrix.suite }} main
+          extra-repo-keys: |
+            -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+            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
+            wI4qF/KKq9BfyfucAs0ykA==
+            =szki
+            -----END PGP PUBLIC KEY BLOCK-----
+          host-arch: arm64
+          setup-hook:
+            apt-get update && apt-get install -y ca-certificates devscripts && sed -i s/openjdk-17-jdk/temurin-17-jdk/g prismlauncher/debian/control
+          source-dir: prismlauncher
+      - name: Import GPG key
+        id: importkey
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+      - name: Sign package
+        run: sudo chmod -Rv 777 ./debian && debsign -k${{ steps.importkey.outputs.fingerprint }} ./debian/artifacts/*.changes
+      - name: Get repo from cache
+        uses: actions/cache@v4
+        with:
+          path: ./repo
+          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
+          enableCrossOsArchive: true
+      - name: Include package in repo
+        run: for file in ./debian/artifacts/*arm64.changes; do reprepro -Vb ./repo include ${{ matrix.suite }} "$file"; done
   commit:
     name: Upload built packages to repository
     runs-on: ubuntu-latest
-    needs: [build-debian-x86]
+    needs: [build-debian-x86, build-debian-arm, build-ubuntu-x86, build-ubuntu-arm]
     steps:
       - name: Get updated repo from cache
         uses: actions/cache@v4
