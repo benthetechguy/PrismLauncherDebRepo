@@ -2,21 +2,6 @@ name: "Build and upload Prism Launcher Release"
 on: workflow_dispatch
 
 jobs:
-  checkout-repo:
-    name: Checkout current repo
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache build directory
-        uses: actions/cache@v4
-        with:
-          path: ./repo
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
-          enableCrossOsArchive: true
-      - name: Checkout repo
-        uses: actions/checkout@v6
-        with:
-          ref: repo
-          path: ./repo
   build-debian-x86:
     name: Build for ${{ matrix.suite }} on amd64
     runs-on: ubuntu-latest
@@ -30,13 +15,20 @@ jobs:
     steps:
       - name: Checkout prismlauncher packaging
         run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
+      - name: Cache package build directory
+        uses: actions/cache@v4
+        with:
+          path: ./${{ matrix.suite }}-${{ matrix.arch }}
+          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.suite }}-${{ matrix.arch }}
+          enableCrossOsArchive: true
       - name: Install Debian tools
-        run: sudo apt-get install -y devscripts git-buildpackage reprepro
+        run: sudo apt-get install -y devscripts git-buildpackage
       - name: Extract original tarball from git
         run: cd ./prismlauncher && gbp export-orig
       - name: Build Debian package
         uses: jtdor/build-deb-action@v1
         with:
+          artifacts-dir: ./${{ matrix.suite }}-${{ matrix.arch }}
           before-build-hook: cd ./prismlauncher && dch -D ${{ matrix.suite }} --bpo ""
           buildpackage-opts: --build=binary
           docker-image: debian:${{ matrix.suite }}-slim
@@ -83,21 +75,7 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
       - name: Sign package
-        run: sudo chmod -Rv 777 ./debian && debsign -k${{ steps.importkey.outputs.fingerprint }} ./debian/artifacts/*.changes
-      - name: Get repo from cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ./repo
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
-          enableCrossOsArchive: true
-      - name: Include package in repo
-        run: for file in ./debian/artifacts/*amd64.changes; do reprepro -Vb ./repo include ${{ matrix.suite }} "$file"; done
-      - name: Save repo to cache
-        uses: actions/cache/save@v4
-        with:
-          path: ./repo
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
-          enableCrossOsArchive: true
+        run: sudo chmod -Rv 777 ./debian && debsign -k${{ steps.importkey.outputs.fingerprint }} ./${{ matrix.suite }}-${{ matrix.arch }}/*.changes
   build-debian-arm:
     name: Build for ${{ matrix.suite }} on arm64
     runs-on: ubuntu-24.04-arm
@@ -111,13 +89,20 @@ jobs:
     steps:
       - name: Checkout prismlauncher packaging
         run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
+      - name: Cache package build directory
+        uses: actions/cache@v4
+        with:
+          path: ./${{ matrix.suite }}-${{ matrix.arch }}
+          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.suite }}-${{ matrix.arch }}
+          enableCrossOsArchive: true
       - name: Install Debian tools
-        run: sudo apt-get install -y devscripts git-buildpackage reprepro
+        run: sudo apt-get install -y devscripts git-buildpackage
       - name: Extract original tarball from git
         run: cd ./prismlauncher && gbp export-orig
       - name: Build Debian package
         uses: jtdor/build-deb-action@v1
         with:
+          artifacts-dir: ./${{ matrix.suite }}-${{ matrix.arch }}
           before-build-hook: cd ./prismlauncher && dch -D ${{ matrix.suite }} --bpo ""
           buildpackage-opts: --build=binary
           docker-image: debian:${{ matrix.suite }}-slim
@@ -165,21 +150,7 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
       - name: Sign package
-        run: sudo chmod -Rv 777 ./debian && debsign -k${{ steps.importkey.outputs.fingerprint }} ./debian/artifacts/*.changes
-      - name: Get repo from cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ./repo
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
-          enableCrossOsArchive: true
-      - name: Include package in repo
-        run: for file in ./debian/artifacts/*arm64.changes; do reprepro -Vb ./repo include ${{ matrix.suite }} "$file"; done
-      - name: Save repo to cache
-        uses: actions/cache/save@v4
-        with:
-          path: ./repo
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
-          enableCrossOsArchive: true
+        run: sudo chmod -Rv 777 ./debian && debsign -k${{ steps.importkey.outputs.fingerprint }} ./${{ matrix.suite }}-${{ matrix.arch }}/*.changes
   build-ubuntu-x86:
     name: Build for ${{ matrix.suite }} on amd64
     runs-on: ubuntu-latest
@@ -192,8 +163,14 @@ jobs:
     steps:
       - name: Checkout prismlauncher packaging
         run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
+      - name: Cache package build directory
+        uses: actions/cache@v4
+        with:
+          path: ./${{ matrix.suite }}-${{ matrix.arch }}
+          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.suite }}-${{ matrix.arch }}
+          enableCrossOsArchive: true
       - name: Install Debian tools
-        run: sudo apt-get install -y devscripts git-buildpackage reprepro
+        run: sudo apt-get install -y devscripts git-buildpackage
       - name: Extract original tarball from git
         run: cd ./prismlauncher && gbp export-orig
       - name: Build Ubuntu package
@@ -201,6 +178,7 @@ jobs:
         env:
           DEB_BUILD_OPTIONS: noautodbgsym
         with:
+          artifacts-dir: ./${{ matrix.suite }}-${{ matrix.arch }}
           before-build-hook: apt-get update && apt-get install -y devscripts && cd ./prismlauncher && dch -D ${{ matrix.suite }} --local ~${{ matrix.suite }} ""
           buildpackage-opts: --build=binary
           docker-image: ubuntu:${{ matrix.suite }}
@@ -211,21 +189,7 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
       - name: Sign package
-        run: sudo chmod -Rv 777 ./debian && debsign -k${{ steps.importkey.outputs.fingerprint }} ./debian/artifacts/*.changes
-      - name: Get repo from cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ./repo
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
-          enableCrossOsArchive: true
-      - name: Include package in repo
-        run: for file in ./debian/artifacts/*amd64.changes; do reprepro -Vb ./repo include ${{ matrix.suite }} "$file"; done
-      - name: Save repo to cache
-        uses: actions/cache/save@v4
-        with:
-          path: ./repo
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
-          enableCrossOsArchive: true
+        run: sudo chmod -Rv 777 ./debian && debsign -k${{ steps.importkey.outputs.fingerprint }} ./${{ matrix.suite }}-${{ matrix.arch }}/*.changes
   build-ubuntu-arm:
     name: Build for ${{ matrix.suite }} on arm64
     runs-on: ubuntu-24.04-arm
@@ -238,8 +202,14 @@ jobs:
     steps:
       - name: Checkout prismlauncher packaging
         run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
+      - name: Cache package build directory
+        uses: actions/cache@v4
+        with:
+          path: ./${{ matrix.suite }}-${{ matrix.arch }}
+          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.suite }}-${{ matrix.arch }}
+          enableCrossOsArchive: true
       - name: Install Debian tools
-        run: sudo apt-get install -y devscripts git-buildpackage reprepro
+        run: sudo apt-get install -y devscripts git-buildpackage
       - name: Extract original tarball from git
         run: cd ./prismlauncher && gbp export-orig
       - name: Build Ubuntu package
@@ -247,6 +217,7 @@ jobs:
         env:
           DEB_BUILD_OPTIONS: noautodbgsym
         with:
+          artifacts-dir: ./${{ matrix.suite }}-${{ matrix.arch }}
           before-build-hook: apt-get update && apt-get install -y devscripts && cd ./prismlauncher && dch -D ${{ matrix.suite }} --local ~${{ matrix.suite }} ""
           buildpackage-opts: --build=binary
           docker-image: ubuntu:${{ matrix.suite }}
@@ -258,34 +229,38 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
       - name: Sign package
-        run: sudo chmod -Rv 777 ./debian && debsign -k${{ steps.importkey.outputs.fingerprint }} ./debian/artifacts/*.changes
-      - name: Get repo from cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ./repo
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
-          enableCrossOsArchive: true
-      - name: Include package in repo
-        run: for file in ./debian/artifacts/*arm64.changes; do reprepro -Vb ./repo include ${{ matrix.suite }} "$file"; done
-      - name: Save repo to cache
-        uses: actions/cache/save@v4
-        with:
-          path: ./repo
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
-          enableCrossOsArchive: true
+        run: sudo chmod -Rv 777 ./debian && debsign -k${{ steps.importkey.outputs.fingerprint }} ./${{ matrix.suite }}-${{ matrix.arch }}/*.changes
   commit:
-    name: Upload built packages to repository
+    name: Upload ${{ matrix.suite }} packge for ${{ matrix.arch }} to repository
     runs-on: ubuntu-latest
     needs: [build-debian-x86, build-debian-arm, build-ubuntu-x86, build-ubuntu-arm]
+    strategy:
+      matrix:
+        suite:
+          - bookworm
+          - noble
+          - trixie
+          - plucky
+          - questing
+# no forky yet, missing Adoptium repo
+#          - forky
+        arch: [amd64, arm64]
     steps:
-      - name: Get updated repo from cache
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          ref: repo
+          path: ./repo
+      - name: Get packge from cache
         uses: actions/cache@v4
         with:
-          path: ./repo
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ./${{ matrix.suite }}-${{ matrix.arch }}
+          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.suite }}-${{ matrix.arch }}
           enableCrossOsArchive: true
+      - name: Include package in repo
+        run: reprepro -Vb ./repo include ${{ matrix.suite }} ./${{ matrix.suite }}-${{ matrix.arch }}/*.changes
       - name: Commit changes to repo
         uses: EndBug/add-and-commit@v9
         with:
           cwd: ./repo
-          message: Upload new packages
+          message: Upload ${{ matrix.suite }} packge for ${{ matrix.arch }}
