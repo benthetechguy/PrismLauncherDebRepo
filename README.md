@@ -2,8 +2,8 @@
 ## How to use
 Run the following commands as root:
 ```
-wget https://benthetechguy.github.io/PrismLauncherDebRepo/prismlauncher.gpg -O /usr/share/keyrings/prismlauncher-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/prismlauncher-archive-keyring.gpg] https://benthetechguy.github.io/PrismLauncherDebRepo `. /etc/os-release; echo $VERSION_CODENAME` main" > /etc/apt/sources.list.d/prismlauncher.list
+wget https://Prism-Launcher-for-Debian.github.io/repo/prismlauncher.gpg -O /usr/share/keyrings/prismlauncher-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/prismlauncher-archive-keyring.gpg] https://Prism-Launcher-for-Debian.github.io/repo `. /etc/os-release; echo $VERSION_CODENAME` main" > /etc/apt/sources.list.d/prismlauncher.list
 apt update && apt install prismlauncher
 ```
 ## How to set up your own repo
