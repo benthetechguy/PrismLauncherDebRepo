@@ -26,6 +26,8 @@ jobs:
         run: cd ./prismlauncher && gbp export-orig
       - name: Build Debian package
         uses: jtdor/build-deb-action@v1
+        env:
+          DEB_BUILD_OPTIONS: noautodbgsym
         with:
           artifacts-dir: ./${{ matrix.suite }}-amd64
           before-build-hook: cd ./prismlauncher && dch -D ${{ matrix.suite }} --bpo ""
@@ -100,6 +102,8 @@ jobs:
         run: cd ./prismlauncher && gbp export-orig
       - name: Build Debian package
         uses: jtdor/build-deb-action@v1
+        env:
+          DEB_BUILD_OPTIONS: noautodbgsym
         with:
           artifacts-dir: ./${{ matrix.suite }}-arm64
           before-build-hook: cd ./prismlauncher && dch -D ${{ matrix.suite }} --bpo ""
@@ -318,4 +322,5 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           cwd: ./repo
+          default_author: github_actions
           message: Upload new packages
