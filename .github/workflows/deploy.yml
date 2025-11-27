@@ -12,7 +12,7 @@ jobs:
           - trixie
 # no forky yet, missing Adoptium repo
 #          - forky
-        arch: [i386, amd64, armhf, arm64]
+        arch: [amd64, arm64]
     steps:
       - name: Checkout prismlauncher packaging
         run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
@@ -88,7 +88,7 @@ jobs:
           - noble
           - plucky
           - questing
-        arch: [i386, amd64, armhf, arm64]
+        arch: [amd64, arm64]
     steps:
       - name: Checkout prismlauncher packaging
         run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
@@ -139,8 +139,8 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
       - name: Include packages in repo
-#        run: for suite in bookworm noble plucky trixie questing forky; do for arch in i386 amd64 armhf arm64; do reprepro -Vb ./repo include "$suite" "./${suite}-${arch}/"*.changes; done; done
-        run: for suite in bookworm noble plucky trixie questing; do for arch in i386 amd64 armhf arm64; do reprepro -Vb ./repo include "$suite" "./${suite}-${arch}/"*.changes; done; done
+#        run: for suite in bookworm noble plucky trixie questing forky; do for arch in amd64 arm64; do reprepro -Vb ./repo include "$suite" "./${suite}-${arch}/"*.changes; done; done
+        run: for suite in bookworm noble plucky trixie questing; do for arch in amd64 arm64; do reprepro -Vb ./repo include "$suite" "./${suite}-${arch}/"*.changes; done; done
       - name: Commit changes to repo
         uses: EndBug/add-and-commit@v9
         with:
