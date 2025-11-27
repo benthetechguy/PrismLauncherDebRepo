@@ -186,8 +186,10 @@ jobs:
         run: cd ./prismlauncher && gbp export-orig
       - name: Build Ubuntu package
         uses: jtdor/build-deb-action@v1
+        env:
+          DEB_BUILD_OPTIONS: noautodbgsym
         with:
-          before-build-hook: apt-get update && apt-get install -y devscripts && cd ./prismlauncher && dch -D ${{ matrix.suite }} --bpo ""
+          before-build-hook: apt-get update && apt-get install -y devscripts libdistro-info-perl && cd ./prismlauncher && dch -D ${{ matrix.suite }} --local ~${{ matrix.suite }} ""
           buildpackage-opts: --build=binary
           docker-image: ubuntu:${{ matrix.suite }}
           source-dir: prismlauncher
@@ -224,8 +226,10 @@ jobs:
         run: cd ./prismlauncher && gbp export-orig
       - name: Build Ubuntu package
         uses: jtdor/build-deb-action@v1
+        env:
+          DEB_BUILD_OPTIONS: noautodbgsym
         with:
-          before-build-hook: apt-get update && apt-get install -y devscripts && cd ./prismlauncher && dch -D ${{ matrix.suite }} --bpo ""
+          before-build-hook: apt-get update && apt-get install -y devscripts libdistro-info-perl && cd ./prismlauncher && dch -D ${{ matrix.suite }} --local ~${{ matrix.suite }} ""
           buildpackage-opts: --build=binary
           docker-image: ubuntu:${{ matrix.suite }}
           host-arch: arm64
