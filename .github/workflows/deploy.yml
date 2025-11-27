@@ -9,7 +9,7 @@ jobs:
       matrix:
         suite:
           - bookworm
-          - trixie
+#          - trixie
 # no forky yet, missing Adoptium repo
 #          - forky
     steps:
@@ -82,7 +82,7 @@ jobs:
       matrix:
         suite:
           - bookworm
-          - trixie
+#          - trixie
 # no forky yet, missing Adoptium repo
 #          - forky
     steps:
@@ -150,84 +150,6 @@ jobs:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
       - name: Sign package
         run: sudo chmod -Rv 777 ./${{ matrix.suite }}-arm64 && debsign -k${{ steps.importkey.outputs.fingerprint }} ./${{ matrix.suite }}-arm64/*.changes
-  build-ubuntu-x86:
-    name: Build for ${{ matrix.suite }} on amd64
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        suite:
-          - noble
-          - plucky
-          - questing
-    steps:
-      - name: Checkout prismlauncher packaging
-        run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
-      - name: Cache package build directory
-        uses: actions/cache@v4
-        with:
-          path: ./${{ matrix.suite }}-amd64
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.suite }}-amd64
-      - name: Install Debian tools
-        run: sudo apt-get install -y devscripts git-buildpackage
-      - name: Extract original tarball from git
-        run: cd ./prismlauncher && gbp export-orig
-      - name: Build Ubuntu package
-        uses: jtdor/build-deb-action@v1
-        env:
-          DEB_BUILD_OPTIONS: noautodbgsym
-        with:
-          artifacts-dir: ./${{ matrix.suite }}-amd64
-          before-build-hook: apt-get update && apt-get install -y devscripts && cd ./prismlauncher && dch -D ${{ matrix.suite }} --local ~${{ matrix.suite }} ""
-          buildpackage-opts: --build=binary
-          docker-image: ubuntu:${{ matrix.suite }}
-          source-dir: prismlauncher
-      - name: Import GPG key
-        id: importkey
-        uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-      - name: Sign package
-        run: sudo chmod -Rv 777 ./${{ matrix.suite }}-amd64 && debsign -k${{ steps.importkey.outputs.fingerprint }} ./${{ matrix.suite }}-amd64/*.changes
-  build-ubuntu-arm:
-    name: Build for ${{ matrix.suite }} on arm64
-    runs-on: ubuntu-24.04-arm
-    strategy:
-      matrix:
-        suite:
-          - noble
-          - plucky
-          - questing
-    steps:
-      - name: Checkout prismlauncher packaging
-        run: git clone --branch debian/unstable https://salsa.debian.org/BenTheTechGuy/prismlauncher.git
-      - name: Cache package build directory
-        uses: actions/cache@v4
-        with:
-          path: ./${{ matrix.suite }}-arm64
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.suite }}-arm64
-          enableCrossOsArchive: true
-      - name: Install Debian tools
-        run: sudo apt-get install -y devscripts git-buildpackage
-      - name: Extract original tarball from git
-        run: cd ./prismlauncher && gbp export-orig
-      - name: Build Ubuntu package
-        uses: jtdor/build-deb-action@v1
-        env:
-          DEB_BUILD_OPTIONS: noautodbgsym
-        with:
-          artifacts-dir: ./${{ matrix.suite }}-arm64
-          before-build-hook: apt-get update && apt-get install -y devscripts && cd ./prismlauncher && dch -D ${{ matrix.suite }} --local ~${{ matrix.suite }} ""
-          buildpackage-opts: --build=binary
-          docker-image: ubuntu:${{ matrix.suite }}
-          host-arch: arm64
-          source-dir: prismlauncher
-      - name: Import GPG key
-        id: importkey
-        uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-      - name: Sign package
-        run: sudo chmod -Rv 777 ./${{ matrix.suite }}-arm64 && debsign -k${{ steps.importkey.outputs.fingerprint }} ./${{ matrix.suite }}-arm64/*.changes
   commit:
     name: Upload packges to repository
     runs-on: ubuntu-latest
@@ -249,50 +171,50 @@ jobs:
           path: ./bookworm-arm64
           key: cache-${{ github.run_id }}-${{ github.run_attempt }}-bookworm-arm64
           enableCrossOsArchive: true
-      - name: Get noble packge for amd64 from cache
-        uses: actions/cache@v4
-        with:
-          path: ./noble-amd64
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-noble-amd64
-      - name: Get noble packge for arm64 from cache
-        uses: actions/cache@v4
-        with:
-          path: ./noble-arm64
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-noble-arm64
-          enableCrossOsArchive: true
-      - name: Get plucky packge for amd64 from cache
-        uses: actions/cache@v4
-        with:
-          path: ./plucky-amd64
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-plucky-amd64
-      - name: Get plucky packge for arm64 from cache
-        uses: actions/cache@v4
-        with:
-          path: ./plucky-arm64
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-plucky-arm64
-          enableCrossOsArchive: true
-      - name: Get trixie packge for amd64 from cache
-        uses: actions/cache@v4
-        with:
-          path: ./trixie-amd64
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-trixie-amd64
-      - name: Get trixie packge for arm64 from cache
-        uses: actions/cache@v4
-        with:
-          path: ./trixie-arm64
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-trixie-arm64
-          enableCrossOsArchive: true
-      - name: Get questing packge for amd64 from cache
-        uses: actions/cache@v4
-        with:
-          path: ./questing-amd64
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-questing-amd64
-      - name: Get questing packge for arm64 from cache
-        uses: actions/cache@v4
-        with:
-          path: ./questing-arm64
-          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-questing-arm64
-          enableCrossOsArchive: true
+#      - name: Get noble packge for amd64 from cache
+#        uses: actions/cache@v4
+#        with:
+#          path: ./noble-amd64
+#          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-noble-amd64
+#      - name: Get noble packge for arm64 from cache
+#        uses: actions/cache@v4
+#        with:
+#          path: ./noble-arm64
+#          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-noble-arm64
+#          enableCrossOsArchive: true
+#      - name: Get plucky packge for amd64 from cache
+#        uses: actions/cache@v4
+#        with:
+#          path: ./plucky-amd64
+#          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-plucky-amd64
+#      - name: Get plucky packge for arm64 from cache
+#        uses: actions/cache@v4
+#        with:
+#          path: ./plucky-arm64
+#          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-plucky-arm64
+#          enableCrossOsArchive: true
+#      - name: Get trixie packge for amd64 from cache
+#        uses: actions/cache@v4
+#        with:
+#          path: ./trixie-amd64
+#          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-trixie-amd64
+#      - name: Get trixie packge for arm64 from cache
+#        uses: actions/cache@v4
+#        with:
+#          path: ./trixie-arm64
+#          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-trixie-arm64
+#          enableCrossOsArchive: true
+#      - name: Get questing packge for amd64 from cache
+#        uses: actions/cache@v4
+#        with:
+#          path: ./questing-amd64
+#          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-questing-amd64
+#      - name: Get questing packge for arm64 from cache
+#        uses: actions/cache@v4
+#        with:
+#          path: ./questing-arm64
+#          key: cache-${{ github.run_id }}-${{ github.run_attempt }}-questing-arm64
+#          enableCrossOsArchive: true
 #      - name: Get forky packge for amd64 from cache
 #        uses: actions/cache@v4
 #        with:
@@ -308,7 +230,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get -y install reprepro
       - name: Include packages in repo
 #        run: for suite in bookworm noble plucky trixie questing forky; do for arch in amd64 arm64; do reprepro -Vb ./repo include "$suite" "./${suite}-${arch}/*.changes"; done; done
-        run: for suite in bookworm noble plucky trixie questing; do for arch in amd64 arm64; do reprepro -Vb ./repo include "$suite" "./${suite}-${arch}/*.changes"; done; done
+        run: for suite in bookworm; do for arch in amd64 arm64; do ls -la "./${suite}-${arch}"; reprepro -Vb ./repo include "$suite" "./${suite}-${arch}/*.changes"; done; done
       - name: Commit changes to repo
         uses: EndBug/add-and-commit@v9
         with:
