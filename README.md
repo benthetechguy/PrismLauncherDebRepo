@@ -30,8 +30,7 @@ The current `repo` branch of this repository contains an example file with all c
 7. Export the public key of your generated PGP key to some file in the root folder, called for example `prismlauncher.gpg`.
 8. Push your two branches to a new GitHub repo.
 9. Go to Settings > Secrets and Variables > Actions then create a new repository secret called `GPG_PRIVATE_KEY` with the ASCII armored private key of your generated PGP key.
-10. Go to Settings > Actions > General and set Workflow Permissions to Read and Write.
-11. Enable GitHub Pages to serve the `repo` branch.
-12. Go to the Actions page and manually run the workflow every time you want to build new packages for all the releases specified in your `conf/distributions` file; it will automatically upload these packages to the repository.
+10. Enable GitHub Pages to serve the `repo` branch.
+11. Go to the Actions page and manually run the workflow every time you want to build new packages for all the releases specified in your `conf/distributions` file; it will automatically upload these packages to the repository.
 
 When new Debian/Ubuntu releases come out, make sure to run step 6 again after editing `conf/distributions`. Also don't forget to edit `.github/workflows/deploy.yml` to build the new releases.
